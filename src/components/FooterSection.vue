@@ -13,9 +13,8 @@
 </template>
 
 <script setup>
-import logo from '@/assets/images/logo.svg'
+import logo from '@/assets/images/logo.png'
 </script>
-
 <style scoped>
 .footer {
   background-color: #0a728a;
@@ -37,12 +36,24 @@ import logo from '@/assets/images/logo.svg'
 .content {
   flex: 1;
 }
+.footer-left .logo {
+  height: 50px;
+  width: auto;
+}
 
+.footer-right {
+  text-align: right;
+}
 @media (max-width: 768px) {
   .footer {
     flex-direction: column;
     text-align: center;
     align-items: center;
+    gap: 10px;
+  }
+
+  .footer-right {
+    text-align: center;
   }
 }
 </style>

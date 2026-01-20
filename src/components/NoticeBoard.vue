@@ -2,6 +2,19 @@
   <div class="notice-board">
     <h3 class="board-title">Notice Board</h3>
 
+    <!-- Filter Buttons -->
+    <div class="notice-filters">
+      <button
+        v-for="type in types"
+        :key="type"
+        :class="['filter-btn', { active: selectedType === type }]"
+        @click="selectedType = type"
+      >
+        {{ type }}
+      </button>
+    </div>
+
+    <!-- Notices -->
     <ul>
       <li v-for="n in visibleNotices" :key="n.id" class="notice-item">
         <span class="notice-title">{{ n.title }}</span>
@@ -9,9 +22,10 @@
       </li>
     </ul>
 
+    <!-- See more link (single fixed link) -->
     <router-link
-      v-if="notices.length > limit"
-      to="/notices"
+      v-if="filteredNotices.length > limit"
+      :to="`/notices/${selectedType}`"
       class="see-more"
     >
       See more →
@@ -20,24 +34,41 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 
+// Number of notices to show in the main board
 const limit = 2
 
+// Available notice types
+const types = ['general', 'academics', 'admission']
+
+// Currently selected type
+const selectedType = ref('general')
+
+// All notices
 const notices = [
-  { id: 1, title: 'Academic Session 2026 Starts', date: '2026-01-01' },
-  { id: 2, title: 'SSC Scholarship Notice', date: '2025-10-10' },
-  { id: 3, title: 'Exam Routine Published', date: '2025-09-01' },
+  { id: 1, title: 'Academic Session 2026 Starts', date: '2026-01-01', type: 'academics' },
+  { id: 2, title: 'SSC Scholarship Notice', date: '2025-10-10', type: 'academics' },
+  { id: 3, title: 'Exam Routine Published', date: '2025-09-01', type: 'academics' },
+  { id: 4, title: 'School Picnic', date: '2025-08-01', type: 'general' },
+  { id: 5, title: 'Admission Open for 2026', date: '2025-11-01', type: 'admission' },
+  { id: 6, title: 'Parent-Teacher Meeting', date: '2025-07-20', type: 'general' },
+  { id: 7, title: 'New Admission Guidelines', date: '2025-12-01', type: 'admission' },
 ]
 
-const sortedNotices = computed(() =>
-  [...notices].sort((a, b) => new Date(b.date) - new Date(a.date))
+// Filter notices by selected type
+const filteredNotices = computed(() =>
+  notices.filter(n => n.type === selectedType.value)
 )
 
+// Sort by date (latest first) and limit to `limit`
 const visibleNotices = computed(() =>
-  sortedNotices.value.slice(0, limit)
+  [...filteredNotices.value]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, limit)
 )
 
+// Format date nicely
 const formatDate = (date) =>
   new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
@@ -57,14 +88,45 @@ const formatDate = (date) =>
   font-family: 'Arial', sans-serif;
 }
 
+/* Board Title */
 .board-title {
   font-size: 22px;
   font-weight: 700;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   color: #007bff;
   text-align: center;
 }
 
+/* Filter buttons */
+.notice-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-btn {
+  padding: 6px 12px;
+  border: 1px solid #007bff;
+  background: #fff;
+  color: #007bff;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.filter-btn:hover {
+  background: #007bff;
+  color: #fff;
+}
+
+.filter-btn.active {
+  background: #007bff;
+  color: #fff;
+}
+
+/* Notices */
 .notice-board ul {
   list-style: none;
   padding: 0;
@@ -97,6 +159,7 @@ const formatDate = (date) =>
   margin-top: 4px;
 }
 
+/* See more */
 .see-more {
   display: inline-block;
   margin-top: 12px;
