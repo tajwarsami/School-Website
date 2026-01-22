@@ -15,7 +15,16 @@
 
     <ul>
       <li v-for="n in visibleNotices" :key="n.id" class="notice-item">
-        <span class="notice-title">{{ n.title }}</span>
+
+        <a
+          v-if="n.pdf"
+          :href="n.pdf"
+          target="_blank"
+          class="notice-title-link"
+        >
+          {{ n.title }}
+        </a>
+        <span v-else class="notice-title">{{ n.title }}</span>
         <small class="notice-date">{{ formatDate(n.date) }}</small>
       </li>
     </ul>
@@ -58,19 +67,15 @@ const formatDate = date =>
 
 <style scoped>
 .notice-board {
-  background-color: #f7f9fc;
+  background: #f7f9fc;
   padding: 20px;
   border-radius: 12px;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .board-title {
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 15px;
-  color: #007bff;
   text-align: center;
+  color: #007bff;
+  margin-bottom: 15px;
 }
 
 .notice-filters {
@@ -78,7 +83,6 @@ const formatDate = date =>
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
-  flex-wrap: wrap;
 }
 
 .filter-btn {
@@ -87,7 +91,6 @@ const formatDate = date =>
   background: #fff;
   color: #007bff;
   border-radius: 6px;
-  font-weight: 600;
   cursor: pointer;
 }
 
@@ -107,11 +110,24 @@ const formatDate = date =>
 
 .notice-title {
   font-weight: 600;
+  display: block;
+}
+
+.notice-title-link {
+  font-weight: 600;
+  display: block;
+  color: #007bff;
+  text-decoration: none;
+  margin-bottom: 3px;
+}
+
+.notice-title-link:hover {
+  text-decoration: underline;
 }
 
 .notice-date {
   font-size: 13px;
-  color: #555;
+  color: #666;
 }
 
 .see-more {
@@ -119,18 +135,5 @@ const formatDate = date =>
   margin-top: 12px;
   color: #007bff;
   font-weight: 600;
-  text-decoration: none;
-}
-
-@media (max-width: 768px) {
-  .board-title {
-    font-size: 20px;
-  }
-  .notice-item {
-    padding: 10px 12px;
-  }
-  .notice-date {
-    font-size: 12px;
-  }
 }
 </style>

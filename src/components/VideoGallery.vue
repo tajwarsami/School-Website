@@ -3,11 +3,7 @@
     <h2 class="section-title">Video Gallery</h2>
     <div class="video-grid">
       <div class="video-item" v-for="(video, index) in videos" :key="index">
-        <iframe
-          :src="video.url"
-          frameborder="0"
-          allowfullscreen
-        ></iframe>
+        <iframe :src="video.url" frameborder="0" allowfullscreen></iframe>
         <p class="video-title">{{ video.title }}</p>
       </div>
     </div>
@@ -19,10 +15,10 @@
         <span class="news-date">{{ item.date }}</span>
       </li>
     </ul>
-    
+
     <div class="see-more">
-  <router-link to="/news" class="see-more-link">See More</router-link>
-</div>
+      <router-link to="/news" class="see-more-link">See More</router-link>
+    </div>
   </section>
 </template>
 
@@ -34,15 +30,16 @@ const videos = [
 ];
 
 const news = [
-  { title: "Farewell Ceremony", date: "Mar 15, 2026" },
-  { title: "Music Competition", date: "Apr 10, 2026" },
+  { title: "Farewell Ceremony", date: "Mar 15, 2026", pdf: "/pdfs/farewell.pdf" },
+  { title: "Music Competition", date: "Apr 10, 2026", pdf: "/pdfs/music.pdf" },
   { title: "Sports Day", date: "May 5, 2026" },
-  { title: "Science Fair", date: "Jun 12, 2026" },
+  { title: "Science Fair", date: "Jun 12, 2026", pdf: "/pdfs/science.pdf" },
   { title: "Art Exhibition", date: "Jul 20, 2026" },
 ];
 
 const limitedNews = news.slice(0, 3);
 </script>
+
 
 <style scoped>
 .media-section {

@@ -1,34 +1,45 @@
 <template>
   <header>
-    <!-- Top Bar -->
     <div class="top-bar">
       <div class="left">
-        Please follow contact page |
-        <a href="mailto:cescctg05@gmail.com">E-mail: cescctg05@gmail.com</a>
+        {{ currentDateTime }}
       </div>
+
       <div class="right">
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        <div class="login-dropdown">
+          <span class="login-btn">Login ▼</span>
+          <ul class="login-menu">
+            <li>
+              <a href="https://live.academyims.com/Student_Portal" target="_blank">
+                Student Portal
+              </a>
+            </li>
+            <li>
+              <a href="https://live.academyims.com/" target="_blank">
+                Academic Portal
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" target="_blank"><i class="fab fa-youtube"></i></a>
+        <a href="#" target="_blank"><i class="fab fa-linkedin-in"></i></a>
       </div>
     </div>
 
-    <!-- Main Header -->
     <div class="main-header">
       <div class="logo-area">
         <img :src="logo" />
         <h2>Cantonment English School & College</h2>
       </div>
 
-      <!-- Hamburger for Mobile -->
       <div class="hamburger" @click="toggleMobileMenu">
         <span :class="{ open: mobileMenuOpen }"></span>
         <span :class="{ open: mobileMenuOpen }"></span>
         <span :class="{ open: mobileMenuOpen }"></span>
       </div>
 
-      <!-- Menu -->
       <nav class="menu" :class="{ 'mobile-open': mobileMenuOpen }">
         <router-link to="/" :class="{ active: isActive('/') }">Home</router-link>
 
@@ -41,7 +52,7 @@
         >
           <span
             class="dropbtn"
-            :class="{ active: isMenuRouteActive(menu.name) }"
+            :class="{ active: isMenuRouteActive(menu.name) || openMenus[menu.name] }"
             @click="!isDesktop && toggleMobileDropdown(menu.name)"
           >
             {{ menu.name }}
@@ -49,17 +60,27 @@
           </span>
 
           <ul v-show="openMenus[menu.name]" class="dropdown-content">
-            <li v-for="item in menu.items" :key="item.link">
-              <router-link :to="item.link" :class="{ active: isActive(item.link) }">
+            <li v-for="item in menu.items" :key="item.link || item.name">
+              <a v-if="item.external" :href="item.link" target="_blank">
+                {{ item.name }}
+              </a>
+              <router-link
+                v-else
+                :to="item.link"
+                :class="{ active: isActive(item.link) }"
+              >
                 {{ item.name }}
               </router-link>
             </li>
           </ul>
         </div>
 
-        <router-link to="/downloads" :class="{ active: isActive('/downloads') }">Downloads</router-link>
-        <router-link to="/payment" :class="{ active: isActive('/payment') }">Payment Procedure</router-link>
-        <router-link to="/contact" :class="{ active: isActive('/contact') }">Contact</router-link>
+        <router-link to="/downloads" :class="{ active: isActive('/downloads') }">
+          Downloads
+        </router-link>
+        <router-link to="/contact" :class="{ active: isActive('/contact') }">
+          Contact
+        </router-link>
       </nav>
     </div>
   </header>
@@ -73,7 +94,9 @@ import logo from '@/assets/images/logo.png'
 const route = useRoute()
 
 const menus = [
-  { name: 'Management', items: [
+  {
+    name: 'Management',
+    items: [
       { name: 'Chief Patron Message', link: '/content/chief-patron-message' },
       { name: 'Chairman Message', link: '/content/chairman-message' },
       { name: 'Principal Message', link: '/content/principal-message' },
@@ -82,20 +105,33 @@ const menus = [
       { name: 'Mission & Vision', link: '/content/mission-vision' }
     ]
   },
-  { name: 'Academic', items: [
+  {
+    name: 'Academic',
+    items: [
       { name: 'Syllabus', link: '/content/syllabus' },
       { name: 'Dress Code', link: '/content/dress-code' }
     ]
   },
-  { name: 'Admission', items: [
+  {
+    name: 'Admission',
+    items: [
       { name: 'Tuition Fee', link: '/content/tuition-fee' },
       { name: 'How to Apply', link: '/content/how-to-apply' },
       { name: 'Apply Online', link: '/content/apply-online' }
     ]
   },
-  { name: 'Careers', items: [
+  {
+    name: 'Careers',
+    items: [
       { name: 'Job Vacancies', link: '/content/job-vacancies' },
       { name: 'Submit Resume', link: '/content/submit-resume' }
+    ]
+  },
+  {
+    name: 'Payment Procedure',
+    items: [
+      { name: 'Fees Payment', link: 'https://live.academyims.com/Student_Portal', external: true },
+      { name: 'Fees Payment v2', link: 'https://pay.academyims.com/auth/login', external: true }
     ]
   }
 ]
@@ -103,45 +139,115 @@ const menus = [
 const openMenus = reactive(Object.fromEntries(menus.map(m => [m.name, false])))
 
 const mobileMenuOpen = ref(false)
-const toggleMobileMenu = () => mobileMenuOpen.value = !mobileMenuOpen.value
+const toggleMobileMenu = () => (mobileMenuOpen.value = !mobileMenuOpen.value)
 
-const openDropdown = (name) => openMenus[name] = true
-const closeDropdown = (name) => openMenus[name] = false
-const toggleMobileDropdown = (name) => openMenus[name] = !openMenus[name]
+const openDropdown = name => (openMenus[name] = true)
+const closeDropdown = name => (openMenus[name] = false)
+const toggleMobileDropdown = name => (openMenus[name] = !openMenus[name])
 
-const isActive = (link) => route.path === link
-const isMenuRouteActive = (menuName) => {
+const isActive = link => route.path === link
+const isMenuRouteActive = menuName => {
   const menu = menus.find(m => m.name === menuName)
-  if (!menu) return false
-  return menu.items.some(item => item.link === route.path)
+  return menu?.items.some(item => !item.external && item.link === route.path)
 }
 
 const windowWidth = ref(window.innerWidth)
-const updateWidth = () => windowWidth.value = window.innerWidth
+const updateWidth = () => (windowWidth.value = window.innerWidth)
+
 onMounted(() => window.addEventListener('resize', updateWidth))
 onUnmounted(() => window.removeEventListener('resize', updateWidth))
+
 const isDesktop = computed(() => windowWidth.value > 768)
+
+const currentDateTime = ref('')
+let timer = null
+
+const updateDateTime = () => {
+  const now = new Date()
+  currentDateTime.value = now.toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  })
+}
+
+onMounted(() => {
+  updateDateTime()
+  timer = setInterval(updateDateTime, 1000)
+})
+
+onUnmounted(() => clearInterval(timer))
 </script>
 
 <style scoped>
-/* Top Bar */
+  
+* {
+  box-sizing: border-box;
+}
+
 .top-bar {
   background: #003f4f;
   color: white;
   display: flex;
   justify-content: space-between;
-  padding: 4px 20px;
-  font-size: 13px;
-  z-index: 1000;
-  position: relative;
+  padding: 10px 30px;
+  font-size: 15px;
 }
+
+.top-bar .right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .top-bar a {
   color: white;
   text-decoration: none;
-  margin-left: 6px;
 }
 
-/* Main Header */
+.login-dropdown {
+  position: relative;
+}
+
+.login-btn {
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.login-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: white;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ddd;
+  min-width: 180px;
+  display: none;
+  z-index: 2000;
+}
+
+.login-menu li a {
+  display: block;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+}
+
+.login-menu li a:hover {
+  background: #f2f2f2;
+  color: #0a728a;
+}
+
+.login-dropdown:hover .login-menu {
+  display: block;
+}
+
 .main-header {
   display: flex;
   justify-content: space-between;
@@ -149,9 +255,6 @@ const isDesktop = computed(() => windowWidth.value > 768)
   padding: 10px 20px;
   background: white;
   border-bottom: 1px solid #ddd;
-  position: relative;
-  z-index: 1001; /* higher than banner */
-  overflow: visible; /* ensure dropdown visible */
 }
 
 .logo-area {
@@ -159,28 +262,30 @@ const isDesktop = computed(() => windowWidth.value > 768)
   align-items: center;
   gap: 8px;
 }
+
 .logo-area img {
   width: 50px;
 }
+
 .logo-area h2 {
   font-size: 16px;
   margin: 0;
 }
 
-/* Hamburger */
 .hamburger {
   display: none;
   flex-direction: column;
   gap: 4px;
   cursor: pointer;
 }
+
 .hamburger span {
-  display: block;
   width: 25px;
   height: 3px;
-  background-color: #333;
+  background: #333;
   transition: 0.3s;
 }
+
 .hamburger span.open:nth-child(1) {
   transform: rotate(45deg) translate(5px, 5px);
 }
@@ -191,121 +296,103 @@ const isDesktop = computed(() => windowWidth.value > 768)
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-/* Menu */
 .menu {
   display: flex;
-  gap: 8px;
+  gap: 4px;
   align-items: center;
-  position: relative;
-  z-index: 1002; /* ensure above banner */
+}
+
+.menu > *, .dropbtn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  color: #333;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s, color 0.3s;
+}
+
+.menu > *.active, .menu > *:hover,
+.dropbtn.active, .dropbtn:hover {
+  background: #0a728a;
+  color: white;
 }
 
 .dropdown {
   position: relative;
 }
+
 .dropbtn {
   cursor: pointer;
-  font-weight: 500;
-  color: #333;
-  text-decoration: none;
   display: flex;
   align-items: center;
-  padding: 4px 6px;
-  border-radius: 4px;
-  transition: all 0.3s;
 }
-.dropbtn.active {
-  color: white;
-  background-color: #0a728a;
-}
+
 .dropbtn .arrow {
-  margin-left: 2px;
+  margin-left: 4px;
+  font-size: 12px;
 }
 
 .dropdown-content {
-  display: block;
   position: absolute;
   top: 100%;
   left: 0;
-  background-color: #fff;
-  min-width: 160px;
-  border: 1px solid #ddd;
+  background: white;
   list-style: none;
   padding: 0;
   margin: 0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-  z-index: 1002;
+  border: 1px solid #ddd;
+  min-width: 160px;
+  z-index: 1000;
 }
-.dropdown-content[style*="display: none"] {
-  display: none !important;
-}
-.dropdown-content li {
-  padding: 8px 12px;
-}
-.dropdown-content li:hover {
-  background-color: #f2f2f2;
-}
+
 .dropdown-content li a {
-  text-decoration: none;
-  color: #333;
   display: block;
-  transition: all 0.3s;
-}
-.dropdown-content li a.active {
-  color: white;
-  background-color: #0a728a;
-}
-.dropdown-content li a:hover {
-  color: #0a728a;
-}
-
-.menu > * {
-  cursor: pointer;
-  font-weight: 500;
+  padding: 8px 12px;
   color: #333;
   text-decoration: none;
-  transition: color 0.3s;
-  padding: 4px 6px;
-  border-radius: 4px;
-}
-.menu > *.active {
-  color: white;
-  background-color: #0a728a;
-}
-.menu > *:hover {
-  color: #0a728a;
+  transition: background 0.3s, color 0.3s;
 }
 
-/* Mobile Styles */
+.dropdown-content li a:hover {
+  background: #0a728a;
+  color: white;
+}
+
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
+    z-index: 1500;
   }
+
   .menu {
     display: none;
     flex-direction: column;
-    background: white;
     position: absolute;
-    top: 60px;
     right: 0;
+    top: 60px;
+    background: white;
     width: 220px;
     border: 1px solid #ddd;
-    padding: 10px 0;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-    z-index: 1003; /* above banner */
+    z-index: 1000;
+    gap: 0;
   }
+
   .menu.mobile-open {
     display: flex;
   }
-  .menu > * {
-    padding: 8px 16px;
-    width: 100%;
-  }
+
   .dropdown-content {
     position: relative;
-    top: 0;
     border: none;
-    box-shadow: none;
+    background: #f9f9f9;
+  }
+
+  .dropbtn .arrow {
+    margin-left: 6px;
   }
 }
+
 </style>

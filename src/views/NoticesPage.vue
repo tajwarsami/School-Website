@@ -1,15 +1,51 @@
 <template>
-  <div class="notices-page">
-    <h2 class="page-title">{{ pageTitle }} Notices</h2>
+  <div class="notice-details">
+    <h2 class="page-title">Notices - {{ noticeType }}</h2>
 
-    <ul>
-      <li v-for="n in sortedNotices" :key="n.id" class="notice-item">
-        <span class="notice-title">{{ n.title }}</span>
-        <small class="notice-date">{{ formatDate(n.date) }}</small>
-      </li>
-    </ul>
+    <table class="notice-table">
+      <thead>
+        <tr>
+          <th>SL</th>
+          <th>Title</th>
+          <th>Description</th>
+          <th></th>
+        </tr>
+      </thead>
 
-    <router-link to="/" class="back-link">← Back to Home</router-link>
+      <tbody>
+        <tr v-for="(notice, index) in filteredNotices" :key="notice.id">
+          <!-- SL -->
+          <td>{{ index + 1 }}</td>
+
+          <td class="title-cell">
+            {{ extractFileName(notice.pdf) }}
+          </td>
+
+          <td>
+            <div v-if="notice.pdf" class="pdf-preview">
+              <a :href="notice.pdf" target="_blank">
+                <PdfPreview :src="notice.pdf" />
+              </a>
+            </div>
+          </td>
+
+          <td class="action-cell">
+            <a
+              :href="notice.pdf"
+              download
+              class="action-btn download-btn"
+              title="Download PDF"
+            >
+              Download
+            </a>
+          </td>
+        </tr>
+
+        <tr v-if="filteredNotices.length === 0">
+          <td colspan="4" class="no-data">No notices found</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -17,69 +53,88 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { notices } from '@/data/notices'
+import PdfPreview from '@/components/PdfPreview.vue'
 
 const route = useRoute()
-
-const type = computed(() => route.params.type)
+const noticeType = route.params.type || 'general'
 
 const filteredNotices = computed(() =>
-  notices.filter(n => n.type === type.value)
+  notices.filter(n => n.type === noticeType)
 )
 
-const sortedNotices = computed(() =>
-  [...filteredNotices.value].sort(
-    (a, b) => new Date(b.date) - new Date(a.date)
-  )
-)
-
-const pageTitle = computed(() =>
-  type.value.charAt(0).toUpperCase() + type.value.slice(1)
-)
-
-const formatDate = date =>
-  new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
+const extractFileName = (url) => {
+  if (!url) return ''
+  return decodeURIComponent(url.split('/').pop())
+}
 </script>
 
 <style scoped>
-.notices-page {
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
+.notice-details {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px;
 }
 
 .page-title {
-  text-align: center;
-  color: #007bff;
+  color: #0d6efd;
   margin-bottom: 25px;
-}
-
-.notice-item {
-  background: #fff;
-  padding: 14px 16px;
-  border-radius: 8px;
-  margin-bottom: 12px;
-  border-left: 4px solid #007bff;
-}
-
-.notice-title {
+  text-align: center;
   font-weight: 600;
 }
 
-.notice-date {
-  font-size: 13px;
-  color: #666;
+.notice-table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.back-link {
-  display: inline-block;
-  margin-top: 20px;
-  color: #007bff;
-  font-weight: 600;
+.notice-table th,
+.notice-table td {
+  border: 1px solid #dcdcdc;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+.notice-table th {
+  background: #0d6efd;
+  color: #fff;
+  font-size: 15px;
+}
+
+.notice-table tr:nth-child(even) {
+  background: #f8f9fc;
+}
+
+.title-cell {
+  font-weight: 500;
+}
+
+.pdf-preview {
+  max-height: 200px;
+  overflow: hidden;
+}
+
+.action-cell {
+  text-align: center;
+}
+
+.action-btn {
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 5px;
   text-decoration: none;
+  border: none;
+  background-color: #0d6efd;
+  color: #ffffff;
+  transition: background 0.3s;
+}
+
+.download-btn:hover {
+  background-color: #0b5ed7;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #777;
 }
 </style>
