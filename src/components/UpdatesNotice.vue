@@ -1,52 +1,111 @@
 <template>
-  <div class="updates-notice">
-    <div class="notice-wrapper" :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
-      <div v-for="(notice, index) in notices" :key="index" class="notice-slide">
-        {{ notice }}
-      </div>
+  <div
+    class="updates-notice"
+    @mouseenter="pauseScroll"
+    @mouseleave="startScroll"
+  >
+    <div
+      class="notice-track"
+      :style="{ transform: `translateX(${translateX}px)` }"
+      ref="track"
+    >
+      <span
+        v-for="notice in repeatedNotices"
+        :key="notice.uid"
+        class="notice-item"
+        @click="goToNotice(notice)"
+      >
+        {{ notice.title }}
+      </span>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
+import { notices } from '@/data/notices'
 
-const notices = ref([
-  "Admission for 2026 batch starts from Feb 1",
-  "Annual Sports Day on March 15",
-  "Parent-Teacher meeting scheduled for Jan 30",
-  "New library books available now"
-])
+const router = useRouter()
+const track = ref(null)
 
-const currentIndex = ref(0)
+const speed = 1
+const translateX = ref(-1000)
+let animationId = null
 
-onMounted(() => {
-  setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % notices.value.length
-  }, 3000)
-})
+const recentNotices = computed(() =>
+  [...notices]
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 3)
+)
+
+const repeatedNotices = computed(() =>
+  [...recentNotices.value, ...recentNotices.value].map((n, i) => ({
+    ...n,
+    uid: `${n.id}-${i}`
+  }))
+)
+
+const goToNotice = (notice) => {
+  router.push({
+    path: `/notices/${notice.type}`,
+    query: { id: notice.id }
+  })
+}
+
+const startScroll = () => {
+  if (animationId) return
+
+  const animate = () => {
+    translateX.value += speed
+
+    const trackWidth = track.value.offsetWidth / 2
+    if (translateX.value >= 0) {
+      translateX.value = -trackWidth
+    }
+
+    animationId = requestAnimationFrame(animate)
+  }
+
+  animationId = requestAnimationFrame(animate)
+}
+
+const pauseScroll = () => {
+  cancelAnimationFrame(animationId)
+  animationId = null
+}
+
+onMounted(startScroll)
+onBeforeUnmount(pauseScroll)
 </script>
 
 <style scoped>
 .updates-notice {
   background-color: #f0f0f0;
-  padding: 10px 20px;
+  padding: 10px 0;
   overflow: hidden;
   border: 1px solid #ddd;
-  margin: 20px auto;
-  max-width: 600px;
   border-radius: 8px;
-  font-weight: 500;
-  color: #333;
+  cursor: pointer;
+  max-width: 100%;
 }
 
-.notice-wrapper {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
+.notice-track {
+  display: inline-flex;
+  white-space: nowrap;
+  will-change: transform;
 }
 
-.notice-slide {
-  flex: 0 0 100%;
-  text-align: center;
+.notice-item {
+  padding: 0 40px;
+  font-weight: 600;
+  color: #0d6efd;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.notice-item:hover {
+  color: #084298;
+  text-decoration: underline;
 }
 </style>

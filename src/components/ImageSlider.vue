@@ -55,12 +55,14 @@ onMounted(() => {
   width: 100%;
   aspect-ratio: 16 / 9; 
   overflow: hidden;
+  cursor: pointer;
 }
 
 .slider img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
 }
 
 .timestamp {
@@ -76,30 +78,50 @@ onMounted(() => {
 
 .arrow {
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%) translateX(0);
   color: white;
-  font-size: 2rem;
-  padding: 10px;
-  background: rgba(0,0,0,0.4);
+  font-size: 2.5rem;
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255,255,255,0.5);
   border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: all 0.4s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
-.slider:hover .arrow { 
-  opacity: 1; 
-}
-.arrow:hover { 
-  background: rgba(0,0,0,0.7); 
+
+.slider:hover .arrow.left {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
 
-.arrow.left { 
-  top: 50%; left: 15px; 
-  transform: translateY(-50%); 
+.slider:hover .arrow.right {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
 }
-.arrow.right { 
-  top: 50%; right: 15px; 
-  transform: translateY(-50%); 
+
+
+.arrow.left {
+  left: 10px;
+  transform: translateY(-50%) translateX(-50px);
+}
+
+.arrow.right {
+  right: 10px;
+  transform: translateY(-50%) translateX(50px);
+}
+
+.arrow:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-50%) scale(1.15);
+  border-color: white;
 }
 
 .scroll-indicator {
@@ -137,8 +159,9 @@ onMounted(() => {
     padding: 4px 8px; 
   }
   .arrow { 
-    font-size: 1.5rem; 
-    padding: 6px; 
+    font-size: 2rem; 
+    width: 50px;
+    height: 50px;
   }
   .scroll-indicator { 
     width: 30px; 

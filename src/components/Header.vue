@@ -1,9 +1,7 @@
 <template>
   <header>
     <div class="top-bar">
-      <div class="left">
-        {{ currentDateTime }}
-      </div>
+      <div class="left">{{ currentDateTime }}</div>
 
       <div class="right">
         <div class="login-dropdown">
@@ -56,18 +54,24 @@
             @click="!isDesktop && toggleMobileDropdown(menu.name)"
           >
             {{ menu.name }}
-            <span class="arrow">{{ openMenus[menu.name] ? '▲' : '▼' }}</span>
+            <span class="arrow" :class="{ rotated: openMenus[menu.name] }">▼</span>
           </span>
 
           <ul v-show="openMenus[menu.name]" class="dropdown-content">
             <li v-for="item in menu.items" :key="item.link || item.name">
-              <a v-if="item.external" :href="item.link" target="_blank">
+              <a
+                v-if="item.external"
+                :href="item.link"
+                target="_blank"
+                @click="!isDesktop && closeMobileMenu()"
+              >
                 {{ item.name }}
               </a>
               <router-link
                 v-else
                 :to="item.link"
                 :class="{ active: isActive(item.link) }"
+                @click="!isDesktop && closeMobileMenu()"
               >
                 {{ item.name }}
               </router-link>
@@ -75,10 +79,18 @@
           </ul>
         </div>
 
-        <router-link to="/downloads" :class="{ active: isActive('/downloads') }">
+        <router-link
+          to="/downloads"
+          :class="{ active: isActive('/downloads') }"
+          @click="!isDesktop && closeMobileMenu()"
+        >
           Downloads
         </router-link>
-        <router-link to="/contact" :class="{ active: isActive('/contact') }">
+        <router-link
+          to="/contact"
+          :class="{ active: isActive('/contact') }"
+          @click="!isDesktop && closeMobileMenu()"
+        >
           Contact
         </router-link>
       </nav>
@@ -87,7 +99,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed, onMounted, onUnmounted } from 'vue'
+import { reactive, ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import logo from '@/assets/images/logo.png'
 
@@ -137,13 +149,23 @@ const menus = [
 ]
 
 const openMenus = reactive(Object.fromEntries(menus.map(m => [m.name, false])))
-
 const mobileMenuOpen = ref(false)
+
 const toggleMobileMenu = () => (mobileMenuOpen.value = !mobileMenuOpen.value)
+
+const toggleMobileDropdown = name => {
+  Object.keys(openMenus).forEach(menu => {
+    openMenus[menu] = menu === name ? !openMenus[menu] : false
+  })
+}
 
 const openDropdown = name => (openMenus[name] = true)
 const closeDropdown = name => (openMenus[name] = false)
-const toggleMobileDropdown = name => (openMenus[name] = !openMenus[name])
+
+const closeMobileMenu = () => {
+  mobileMenuOpen.value = false
+  Object.keys(openMenus).forEach(menu => (openMenus[menu] = false))
+}
 
 const isActive = link => route.path === link
 const isMenuRouteActive = menuName => {
@@ -158,6 +180,13 @@ onMounted(() => window.addEventListener('resize', updateWidth))
 onUnmounted(() => window.removeEventListener('resize', updateWidth))
 
 const isDesktop = computed(() => windowWidth.value > 768)
+
+watch(
+  () => route.path,
+  () => {
+    closeMobileMenu()
+  }
+)
 
 const currentDateTime = ref('')
 let timer = null
@@ -184,7 +213,6 @@ onUnmounted(() => clearInterval(timer))
 </script>
 
 <style scoped>
-  
 * {
   box-sizing: border-box;
 }
@@ -277,6 +305,7 @@ onUnmounted(() => clearInterval(timer))
   flex-direction: column;
   gap: 4px;
   cursor: pointer;
+  z-index: 1500;
 }
 
 .hamburger span {
@@ -333,6 +362,12 @@ onUnmounted(() => clearInterval(timer))
 .dropbtn .arrow {
   margin-left: 4px;
   font-size: 12px;
+  display: inline-block;
+  transition: transform 0.3s;
+}
+
+.dropbtn .arrow.rotated {
+  transform: rotate(180deg);
 }
 
 .dropdown-content {
@@ -364,7 +399,6 @@ onUnmounted(() => clearInterval(timer))
 @media (max-width: 768px) {
   .hamburger {
     display: flex;
-    z-index: 1500;
   }
 
   .menu {
@@ -382,6 +416,7 @@ onUnmounted(() => clearInterval(timer))
 
   .menu.mobile-open {
     display: flex;
+    animation: slideDown 0.3s ease;
   }
 
   .dropdown-content {
@@ -393,6 +428,10 @@ onUnmounted(() => clearInterval(timer))
   .dropbtn .arrow {
     margin-left: 6px;
   }
-}
 
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
 </style>

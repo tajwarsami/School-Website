@@ -23,14 +23,14 @@ export const notices = [
   {
     id: 4,
     title: 'Academic Session 2026 Starts',
-    date: '2026-01-01',
+    date: '2025-01-01',
     type: 'academics',
     pdf: '/pdfs/Report.pdf'
   },
   {
     id: 5,
     title: 'SSC Scholarship Notice',
-    date: '2025-10-10',
+    date: '2026-01-10',
     type: 'general',
     pdf: '/pdfs/tabulation_sheet.pdf'
   },
@@ -44,7 +44,7 @@ export const notices = [
   {
     id: 7,
     title: 'Academic Session 2026 Starts',
-    date: '2026-01-01',
+    date: '2025-11-01',
     type: 'academics',
     pdf: '/pdfs/Report.pdf'
   },

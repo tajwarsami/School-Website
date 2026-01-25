@@ -2,138 +2,160 @@
   <div class="news-details">
     <h2 class="page-title">News & Events</h2>
 
-    <table class="news-table">
-      <thead>
-        <tr>
-          <th>SL</th>
-          <th>Title</th>
-          <th>Date</th>
-          <th></th>
-        </tr>
-      </thead>
-
-      <tbody>
-        <tr v-for="(item, index) in newsItems" :key="item.id || index">
-          <!-- SL -->
-          <td>{{ index + 1 }}</td>
-
-          <!-- Title -->
-          <td class="title-cell">{{ item.title }}</td>
-
-          <td>
-            <div v-if="item.pdf" class="pdf-preview">
-              <a :href="item.pdf" target="_blank">
-                <PdfPreview :src="item.pdf" />
-              </a>
+    <div v-if="!singleNews" class="news-cards">
+      <router-link
+        v-for="(item, index) in newsItems"
+        :key="item.id"
+        :to="{ path: '/news', query: { id: item.id } }"
+        class="news-card-link"
+      >
+        <div class="news-card">
+          <div class="news-header">
+            <span class="news-sl">#{{ index + 1 }}</span>
+            <span class="news-title">{{ item.title }}</span>
+          </div>
+          <div class="news-content">
+            <div v-if="item.image" class="news-image">
+              <img :src="item.image" />
             </div>
-            <span v-else>{{ item.date }}</span>
-          </td>
+            <p v-if="item.date" class="news-date">{{ item.date }}</p>
+            <div v-if="item.body" class="news-body">{{ item.body.replace(/<[^>]+>/g, '').slice(0, 150) }}...</div>
+          </div>
+        </div>
+      </router-link>
+    </div>
 
-          <td class="action-cell">
-            <a
-              v-if="item.pdf"
-              :href="item.pdf"
-              download
-              class="action-btn download-btn"
-              title="Download PDF"
-            >
-              Download
-            </a>
-            <span v-else class="no-action">-</span>
-          </td>
-        </tr>
-
-        <tr v-if="newsItems.length === 0">
-          <td colspan="4" class="no-data">No news available</td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-else class="single-news">
+      <div class="news-card highlighted">
+        <div class="news-header">
+          <span class="news-title">{{ singleNews.title }}</span>
+        </div>
+        <div class="news-content">
+          <div v-if="singleNews.image" class="news-image">
+            <img :src="singleNews.image" />
+          </div>
+          <p v-if="singleNews.date" class="news-date">{{ singleNews.date }}</p>
+          <div v-if="singleNews.body" class="news-body" v-html="singleNews.body"></div>
+          <a v-if="singleNews.pdf" :href="singleNews.pdf" target="_blank" class="download-btn">
+            Download PDF
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import PdfPreview from '@/components/PdfPreview.vue'
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { newsData } from '@/data/newsData'
 
-const newsItems = [
-  { id: 1, title: "Farewell Ceremony", date: "Mar 15, 2026", pdf: "/pdfs/farewell.pdf" },
-  { id: 2, title: "Music Competition", date: "Apr 10, 2026", pdf: "/pdfs/Report.pdf" },
-  { id: 3, title: "Sports Day", date: "May 5, 2026" },
-  { id: 4, title: "Science Fair", date: "Jun 12, 2026", pdf: "/pdfs/science.pdf" },
-  { id: 5, title: "Art Exhibition", date: "Jul 20, 2026" },
-]
+const route = useRoute()
+const newsItems = newsData
+
+const singleNews = computed(() => {
+  const id = Number(route.query.id)
+  return id ? newsItems.find(n => n.id === id) : null
+})
 </script>
 
 <style scoped>
-.news-details {
-  max-width: 1100px;
-  margin: auto;
-  padding: 30px;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* { font-family: 'Poppins', sans-serif; }
+
+.news-details { 
+  max-width: 900px; 
+  margin: auto; 
+  padding: 30px 15px; 
 }
 
-.page-title {
-  color: #0d6efd;
-  margin-bottom: 25px;
-  text-align: center;
-  font-weight: 600;
+.page-title { 
+  text-align: center; 
+  color: #0d6efd; 
+  margin-bottom: 30px; 
 }
 
-.news-table {
-  width: 100%;
-  border-collapse: collapse;
+.news-card-link { 
+  text-decoration: none; 
+  color: inherit; 
+  display: block; 
 }
 
-.news-table th,
-.news-table td {
-  border: 1px solid #dcdcdc;
-  padding: 10px;
-  vertical-align: middle;
-}
-
-.news-table th {
-  background: #0d6efd;
-  color: #fff;
-  font-size: 15px;
-}
-
-.news-table tr:nth-child(even) {
+.news-card {
+  border: 1px solid #ddd; 
+  border-radius: 10px;
+  padding: 15px; 
+  margin-bottom: 20px; 
   background: #f8f9fc;
+  transition: box-shadow 0.3s, 
+  background 0.3s, transform 0.3s;
 }
 
-.title-cell {
-  font-weight: 500;
+.news-card:hover { 
+  transform: translateY(-3px); 
 }
 
-.pdf-preview {
-  max-height: 200px;
-  overflow: hidden;
+.news-card.highlighted { 
+  background: #fff3cd;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
 }
 
-.action-cell {
-  text-align: center;
+.news-header { 
+  display: flex; 
+  align-items: center; 
+  margin-bottom: 10px; 
 }
 
-.action-btn {
-  font-size: 14px;
-  padding: 6px 14px;
-  border-radius: 5px;
+.news-sl { 
+  font-weight: 600; 
+  margin-right: 10px; 
+  color: #0d6efd; 
+}
+
+.news-title { 
+  font-size: 18px; 
+  font-weight: 600; 
+  color: #0d6efd; 
+}
+
+.news-content { 
+  margin-top: 5px; 
+}
+
+.news-image img { 
+  width: 100%; 
+  max-height: 260px; 
+  object-fit: cover; 
+  border-radius: 8px; 
+  margin-bottom: 10px; 
+}
+
+.news-date { 
+  font-size: 14px; 
+  color: #555; 
+  margin-bottom: 8px; 
+}
+
+.news-body { 
+  font-size: 15px; 
+  color: #333; 
+  line-height: 1.5; 
+  margin-bottom: 10px; 
+}
+
+.download-btn {
+  display: inline-block; 
+  background: #0d6efd; 
+  color: #fff;
+  padding: 6px 14px; 
+  border-radius: 6px; 
   text-decoration: none;
-  border: none;
-  background-color: #0d6efd;
-  color: #ffffff;
+  font-size: 14px; 
   transition: background 0.3s;
 }
 
-.download-btn:hover {
-  background-color: #0b5ed7;
-}
-
-.no-data {
-  text-align: center;
-  padding: 20px;
-  color: #777;
-}
-
-.no-action {
-  color: #999;
-}
+.download-btn:hover { 
+  background: #094ec6; 
+  }
 </style>

@@ -13,7 +13,9 @@
       </thead>
 
       <tbody>
-        <tr v-for="(notice, index) in filteredNotices" :key="notice.id">
+        <tr
+           v-for="(notice, index) in filteredNotices":key="notice.id":class="{ highlight: notice.id === selectedId }">
+
           <!-- SL -->
           <td>{{ index + 1 }}</td>
 
@@ -57,6 +59,7 @@ import PdfPreview from '@/components/PdfPreview.vue'
 
 const route = useRoute()
 const noticeType = route.params.type || 'general'
+const selectedId = Number(route.query.id)
 
 const filteredNotices = computed(() =>
   notices.filter(n => n.type === noticeType)
@@ -126,6 +129,10 @@ const extractFileName = (url) => {
   background-color: #0d6efd;
   color: #ffffff;
   transition: background 0.3s;
+}
+.highlight {
+  background-color: #e7f1ff !important;
+  border-left: 4px solid #0d6efd;
 }
 
 .download-btn:hover {

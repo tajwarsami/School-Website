@@ -1,15 +1,18 @@
 <template>
   <section class="institution-about-section">
     <div class="institution-about-container">
+      
       <div class="institution-image">
         <img src="@/assets/images/school1.jpg" alt="Institution" />
       </div>
 
       <div class="about-details">
+        <h2>About Cantonment English School & College</h2>
         <p>
-          It is language through which one can transmit knowledge, thoughts and views to others. Language is the best medium of communication. To connect oneself with the world one has to know English. To keep pace with the international community, a nation should give great emphasis on learning English. With this view, this institution (previously known as Cantonment International School) started its journey in 1998. In 2005, it emerged as Cantonment English School (CES). Since then, it has upgraded to HSC level in 2010 and renamed as Cantonment English School & College (CESC). The institution is affiliated with Education Board, Chittagong. Students have excelled in board exams, and the school provides a congenial learning environment to nurture talents in curricular and co-curricular activities.
+          Language is the medium through which we transmit knowledge, thoughts, and ideas. To connect with the world, proficiency in English is essential. With this vision, our institution (formerly Cantonment International School) started in 1998. In 2005, it became Cantonment English School (CES), and later upgraded to HSC level in 2010, now named Cantonment English School & College (CESC). Affiliated with the Chittagong Education Board, our students have excelled in board exams, nurtured in a congenial environment encouraging both curricular and co-curricular talents.
         </p>
       </div>
+
     </div>
   </section>
 </template>
@@ -21,58 +24,86 @@ export default {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 .institution-about-section {
-  padding: 40px 20px;
-  background-color: #f5f5f5;
+  padding: 60px 20px;
+  background: linear-gradient(120deg, #e0f7fa, #ffffff);
+  font-family: 'Poppins', sans-serif;
 }
 
 .institution-about-container {
-  display: flex;          
+  display: flex;
   align-items: flex-start;
   max-width: 1200px;
   margin: 0 auto;
-  gap: 20px;
+  gap: 40px;
 }
 
 .institution-image {
-  flex: 0 0 40%;          
-  height: auto;
-  border-radius: 10px;
+  flex: 0 0 45%;
+  border-radius: 15px;
   overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease;
 }
 
 .institution-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.institution-image:hover img {
+  transform: scale(1.05);
 }
 
 .about-details {
-  flex: 0 0 60%;           
-  background: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  color: #080202;
+  flex: 0 0 55%;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.about-details h2 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #00796b;
+  border-left: 4px solid #00796b;
+  padding-left: 12px;
 }
 
 .about-details p {
-  line-height: 1.8;
-  font-size: 18px;
+  font-size: 17px;
+  line-height: 1.9;
+  color: #333;
 }
 
 @media (max-width: 768px) {
   .institution-about-container {
-    flex-direction: column;  
+    flex-direction: column;
+    gap: 25px;
   }
 
-  .institution-image,
-  .about-details {
+  .institution-image, .about-details {
     flex: 100%;
     max-width: 100%;
   }
 
   .institution-image img {
-    height: 200px;
+    height: 250px;
+  }
+
+  .about-details h2 {
+    font-size: 24px;
+  }
+
+  .about-details p {
+    font-size: 16px;
   }
 }
 </style>

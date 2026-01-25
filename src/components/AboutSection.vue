@@ -1,17 +1,24 @@
 <template>
   <section id="about-section" class="about-section">
     <div class="container">
+      
       <div class="about-text" v-show="visible" :class="{ 'slide-left': visible }">
         <h3 class="welcome-text">Welcome to</h3>
         <h2 class="institution-name">CANTONMENT ENGLISH SCHOOL & COLLEGE</h2>
         <p class="description">
-          Cantonment English School & College is committed to academic excellence, discipline, and moral values. It focuses on holistic development and nurturing students to become responsible citizens.
+          Cantonment English School & College is committed to academic excellence, discipline,
+          and moral values. It focuses on holistic development and nurturing students to become
+          responsible citizens.
         </p>
-        <router-link to="/about-details" class="read-more-btn">Read More</router-link>
+        <router-link to="/about-details" class="read-more-btn">
+          Read More
+        </router-link>
       </div>
+
       <div class="about-image" v-show="visible" :class="{ 'slide-right': visible }">
         <img src="@/assets/images/school1.jpg" alt="Institution" />
       </div>
+
     </div>
   </section>
 </template>
@@ -20,19 +27,26 @@
 export default {
   name: "AboutSection",
   data() {
-    return { visible: false }
+    return {
+      visible: false,
+    };
   },
   mounted() {
-    setTimeout(() => this.visible = true, 100)
-  }
-}
+    setTimeout(() => {
+      this.visible = true;
+    }, 100);
+  },
+};
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
 .about-section { 
     background: #b8b1b1; 
     padding: 40px 20px; 
     color: #080808; 
+    font-family: 'Poppins', sans-serif;
 }
 
 .container { 
@@ -56,6 +70,25 @@ export default {
 .about-text.slide-left { 
     opacity: 1; 
     transform: translateX(0); 
+}
+
+.welcome-text {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.institution-name {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.description {
+    font-size: 16px;
+    line-height: 1.9;
+    font-weight: 400;
+    margin-bottom: 20px;
 }
 
 .about-image { 
@@ -123,5 +156,4 @@ export default {
         transform: translateY(0); 
     }
 }
-
 </style>
