@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 import Downloads from '../views/Downloads.vue'
 import Contact from '../views/Contact.vue'
 import NoticesPage from '../views/NoticesPage.vue'
+import NoticeDetails from '../views/NoticeDetails.vue'
 import AboutDetails from '../views/AboutDetails.vue'
 import ContentPage from '../views/ContentPage.vue'
 import NewsPage from '../views/NewsPage.vue'
@@ -43,6 +44,13 @@ const routes = [
     component: NoticesPage,
     props: true,
     meta: { banner: resolveBanner('pages-banner.jpg', 'Notices') }
+  },
+
+  {
+    path: '/notice/:id',
+    component: NoticeDetails,
+    props: true,
+    meta: { banner: resolveBanner('pages-banner.jpg', 'Notice Details') }
   },
 
   {
@@ -91,6 +99,14 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   isLoading.value = true
+
+  if (to.path.startsWith('/notices/')) {
+    const validTypes = ['general', 'academics', 'admission']
+    if (!validTypes.includes(to.params.type)) {
+      return next('/notices/general')
+    }
+  }
+
   next()
 })
 

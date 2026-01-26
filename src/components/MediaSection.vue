@@ -1,47 +1,49 @@
 <template>
-  <section class="media-section">
-
-    <h2 class="section-title">Video Gallery</h2>
-    <div class="video-grid">
-      <div
-        v-for="(video, index) in limitedVideos"
-        :key="index"
-        class="video-item"
-      >
-        <iframe :src="video.url" frameborder="0" allowfullscreen></iframe>
-        <p class="video-title">{{ video.title }}</p>
+  <section class="media-section-wrapper">
+    <div class="media-section">
+      
+      <h2 class="section-title">Video Gallery</h2>
+      <div class="video-grid">
+        <div
+          v-for="(video, index) in limitedVideos"
+          :key="index"
+          class="video-item"
+        >
+          <iframe :src="video.url" frameborder="0" allowfullscreen></iframe>
+          <p class="video-title">{{ video.title }}</p>
+        </div>
       </div>
-    </div>
-    <div class="see-more">
-      <router-link to="/videos" class="see-more-link">See More</router-link>
-    </div>
+      <div class="see-more">
+        <router-link to="/videos" class="see-more-link">See More</router-link>
+      </div>
 
-    <h2 class="section-title">News & Events</h2>
-    <div class="news-card-grid">
-      <router-link
-        v-for="item in latestNews"
-        :key="item.id"
-        :to="{ path: '/news', query: { id: item.id } }"
-        class="news-card-link"
-      >
-        <div class="news-card">
-          <div v-if="item.image" class="news-card-image">
-            <img :src="item.image" alt="news" />
-          </div>
-          <div class="news-card-body">
-            <h3 class="news-card-title">{{ item.title }}</h3>
-            <p class="news-card-date">{{ item.date }}</p>
-            <div v-if="item.body" class="news-card-preview">
-              {{ item.body.replace(/<[^>]+>/g, '').slice(0, 100) }}...
+      <h2 class="section-title">News & Events</h2>
+      <div class="news-card-grid">
+        <router-link
+          v-for="item in latestNews"
+          :key="item.id"
+          :to="{ path: '/news', query: { id: item.id } }"
+          class="news-card-link"
+        >
+          <div class="news-card">
+            <div v-if="item.image" class="news-card-image">
+              <img :src="item.image" alt="news" />
+            </div>
+            <div class="news-card-body">
+              <h3 class="news-card-title">{{ item.title }}</h3>
+              <p class="news-card-date">{{ item.date }}</p>
+              <div v-if="item.body" class="news-card-preview">
+                {{ item.body.replace(/<[^>]+>/g, '').slice(0, 100) }}...
+              </div>
             </div>
           </div>
-        </div>
-      </router-link>
-    </div>
-    <div class="see-more">
-      <router-link to="/news" class="see-more-link">Explore All</router-link>
-    </div>
+        </router-link>
+      </div>
+      <div class="see-more">
+        <router-link to="/news" class="see-more-link">Explore All</router-link>
+      </div>
 
+    </div>
   </section>
 </template>
 
@@ -62,12 +64,18 @@ const latestNews = newsData.slice(0, 3)
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-* { font-family: 'Poppins', sans-serif; }
+* { font-family: 'Poppins', sans-serif; margin: 0; padding: 0; box-sizing: border-box; }
 
-.media-section { 
-  max-width: 1200px; 
-  margin: auto; 
-  padding: 40px 20px; 
+.media-section-wrapper {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 40px 0;
+}
+
+.media-section {
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 .section-title {
@@ -82,6 +90,7 @@ const latestNews = newsData.slice(0, 3)
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
+  margin-bottom: 40px;
 }
 
 .video-item {
@@ -161,9 +170,23 @@ const latestNews = newsData.slice(0, 3)
   margin: 25px 0; 
 }
 
-.see-more-link { 
-  font-weight: 600; 
-  color: #0d6efd; 
-  text-decoration: none; 
-  }
+.see-more-link {
+  display: inline-block;
+  padding: 10px 28px;
+  font-weight: 600;
+  font-size: 16px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #0d6efd, #6610f2);
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 12px rgba(13, 110, 253, 0.3);
+}
+
+.see-more-link:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(13, 110, 253, 0.35);
+  background: linear-gradient(135deg, #6610f2, #0d6efd);
+}
+
 </style>

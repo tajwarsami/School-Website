@@ -29,7 +29,7 @@ export const newsData = [
     title: 'Art Exhibition',
     date: 'Jul 20, 2026',
     image: new URL('@/assets/images/school1.jpg', import.meta.url).href,
-    pdf: '/pdfs/art.pdf', // image + PDF
+    pdf: '/pdfs/art.pdf',
     body: `<p>Explore the wonderful artworks created by students.</p>`
   }
 ];

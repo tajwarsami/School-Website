@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header ref="headerRef">
     <div class="top-bar">
       <div class="left">{{ currentDateTime }}</div>
 
@@ -29,7 +29,7 @@
     <div class="main-header">
       <div class="logo-area">
         <img :src="logo" />
-        <h2>Cantonment English School & College</h2>
+        <h1>Cantonment English School & College</h1>
       </div>
 
       <div class="hamburger" @click="toggleMobileMenu">
@@ -150,9 +150,9 @@ const menus = [
 
 const openMenus = reactive(Object.fromEntries(menus.map(m => [m.name, false])))
 const mobileMenuOpen = ref(false)
+const headerRef = ref(null)
 
 const toggleMobileMenu = () => (mobileMenuOpen.value = !mobileMenuOpen.value)
-
 const toggleMobileDropdown = name => {
   Object.keys(openMenus).forEach(menu => {
     openMenus[menu] = menu === name ? !openMenus[menu] : false
@@ -161,7 +161,6 @@ const toggleMobileDropdown = name => {
 
 const openDropdown = name => (openMenus[name] = true)
 const closeDropdown = name => (openMenus[name] = false)
-
 const closeMobileMenu = () => {
   mobileMenuOpen.value = false
   Object.keys(openMenus).forEach(menu => (openMenus[menu] = false))
@@ -175,7 +174,6 @@ const isMenuRouteActive = menuName => {
 
 const windowWidth = ref(window.innerWidth)
 const updateWidth = () => (windowWidth.value = window.innerWidth)
-
 onMounted(() => window.addEventListener('resize', updateWidth))
 onUnmounted(() => window.removeEventListener('resize', updateWidth))
 
@@ -190,7 +188,6 @@ watch(
 
 const currentDateTime = ref('')
 let timer = null
-
 const updateDateTime = () => {
   const now = new Date()
   currentDateTime.value = now.toLocaleString('en-US', {
@@ -207,6 +204,10 @@ const updateDateTime = () => {
 onMounted(() => {
   updateDateTime()
   timer = setInterval(updateDateTime, 1000)
+  if (headerRef.value) {
+    const headerHeight = headerRef.value.offsetHeight
+    document.body.style.paddingTop = headerHeight + 'px'
+  }
 })
 
 onUnmounted(() => clearInterval(timer))
@@ -215,6 +216,13 @@ onUnmounted(() => clearInterval(timer))
 <style scoped>
 * {
   box-sizing: border-box;
+}
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 3000;
 }
 
 .top-bar {
@@ -229,7 +237,7 @@ onUnmounted(() => clearInterval(timer))
 .top-bar .right {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .top-bar a {
@@ -280,7 +288,7 @@ onUnmounted(() => clearInterval(timer))
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 15px 20px;
   background: white;
   border-bottom: 1px solid #ddd;
 }
@@ -288,16 +296,19 @@ onUnmounted(() => clearInterval(timer))
 .logo-area {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
 .logo-area img {
-  width: 50px;
+  width: 80px;
 }
 
-.logo-area h2 {
-  font-size: 16px;
+.logo-area h1 {
+  font-size: 24px;
   margin: 0;
+  font-weight: 700;
+  color: #003f4f;
 }
 
 .hamburger {
@@ -327,12 +338,12 @@ onUnmounted(() => clearInterval(timer))
 
 .menu {
   display: flex;
-  gap: 4px;
+  gap: 2px;
   align-items: center;
 }
 
 .menu > *, .dropbtn {
-  padding: 8px 10px;
+  padding: 6px 8px;
   border-radius: 6px;
   font-weight: 500;
   color: #333;
@@ -348,6 +359,7 @@ onUnmounted(() => clearInterval(timer))
   background: #0a728a;
   color: white;
 }
+
 .menu > *,
 .dropbtn {
   font-family: 'Arial', sans-serif;
@@ -412,7 +424,7 @@ onUnmounted(() => clearInterval(timer))
     flex-direction: column;
     position: absolute;
     right: 0;
-    top: 60px;
+    top: 70px;
     background: white;
     width: 220px;
     border: 1px solid #ddd;

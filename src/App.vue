@@ -1,11 +1,14 @@
 <template>
   <PageLoader />
-
   <Header />
-  <HeaderBanner />
-  <router-view />
-  <FooterSection />
+
+  <div class="page-wrapper">
+    <HeaderBanner />
+    <router-view />
+    <FooterSection />
+  </div>
 </template>
+
 
 <script setup>
 import Header from '@/components/Header.vue'

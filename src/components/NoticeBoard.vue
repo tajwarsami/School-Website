@@ -15,16 +15,9 @@
 
     <ul>
       <li v-for="n in visibleNotices" :key="n.id" class="notice-item">
-
-        <a
-          v-if="n.pdf"
-          :href="n.pdf"
-          target="_blank"
-          class="notice-title-link"
-        >
+        <router-link :to="`/notice/${n.id}`" class="notice-title-link">
           {{ n.title }}
-        </a>
-        <span v-else class="notice-title">{{ n.title }}</span>
+        </router-link>
         <small class="notice-date">{{ formatDate(n.date) }}</small>
       </li>
     </ul>
@@ -68,49 +61,71 @@ const formatDate = date =>
 <style scoped>
 .notice-board {
   background: #f7f9fc;
-  padding: 20px;
-  border-radius: 12px;
+  padding: 25px 20px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
 }
 
 .board-title {
   text-align: center;
+  font-size: 1.8rem;
+  font-weight: 700;
   color: #007bff;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.board-title::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #007bff, #00c6ff);
+  margin: 8px auto 0;
+  border-radius: 2px;
 }
 
 .notice-filters {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 20px;
 }
 
 .filter-btn {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border: 1px solid #007bff;
   background: #fff;
   color: #007bff;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .filter-btn.active,
 .filter-btn:hover {
   background: #007bff;
   color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
 }
 
 .notice-item {
   background: #fff;
-  padding: 12px 15px;
-  border-radius: 8px;
-  margin-bottom: 12px;
+  padding: 15px 18px;
+  border-radius: 10px;
+  margin-bottom: 15px;
   border-left: 4px solid #007bff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.notice-title {
-  font-weight: 600;
-  display: block;
+.notice-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 123, 255, 0.15);
 }
 
 .notice-title-link {
@@ -118,11 +133,13 @@ const formatDate = date =>
   display: block;
   color: #007bff;
   text-decoration: none;
-  margin-bottom: 3px;
+  font-size: 1rem;
+  margin-bottom: 4px;
 }
 
 .notice-title-link:hover {
   text-decoration: underline;
+  color: #0056b3;
 }
 
 .notice-date {
@@ -135,5 +152,11 @@ const formatDate = date =>
   margin-top: 12px;
   color: #007bff;
   font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.see-more:hover {
+  color: #0056b3;
+  text-decoration: underline;
 }
 </style>

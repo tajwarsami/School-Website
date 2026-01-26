@@ -1,22 +1,24 @@
 <template>
   <div
-    class="updates-notice"
+    class="updates-notice full-width"
     @mouseenter="pauseScroll"
     @mouseleave="startScroll"
   >
-    <div
-      class="notice-track"
-      :style="{ transform: `translateX(${translateX}px)` }"
-      ref="track"
-    >
-      <span
-        v-for="notice in repeatedNotices"
-        :key="notice.uid"
-        class="notice-item"
-        @click="goToNotice(notice)"
+    <div class="notice-wrapper">
+      <div
+        class="notice-track"
+        :style="{ transform: `translateX(${translateX}px)` }"
+        ref="track"
       >
-        {{ notice.title }}
-      </span>
+        <span
+          v-for="notice in repeatedNotices"
+          :key="notice.uid"
+          class="notice-item"
+          @click="goToNotice(notice)"
+        >
+          {{ notice.title }}
+        </span>
+      </div>
     </div>
   </div>
 </template>
@@ -34,9 +36,7 @@ const translateX = ref(-1000)
 let animationId = null
 
 const recentNotices = computed(() =>
-  [...notices]
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 3)
+  [...notices].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3)
 )
 
 const repeatedNotices = computed(() =>
@@ -47,10 +47,7 @@ const repeatedNotices = computed(() =>
 )
 
 const goToNotice = (notice) => {
-  router.push({
-    path: `/notices/${notice.type}`,
-    query: { id: notice.id }
-  })
+  router.push(`/notice/${notice.id}`)
 }
 
 const startScroll = () => {
@@ -58,12 +55,8 @@ const startScroll = () => {
 
   const animate = () => {
     translateX.value += speed
-
     const trackWidth = track.value.offsetWidth / 2
-    if (translateX.value >= 0) {
-      translateX.value = -trackWidth
-    }
-
+    if (translateX.value >= 0) translateX.value = -trackWidth
     animationId = requestAnimationFrame(animate)
   }
 
@@ -81,13 +74,18 @@ onBeforeUnmount(pauseScroll)
 
 <style scoped>
 .updates-notice {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
   background-color: #f0f0f0;
   padding: 10px 0;
   overflow: hidden;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  cursor: pointer;
-  max-width: 100%;
+  border: none;
+  border-radius: 0;
+}
+
+.notice-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .notice-track {

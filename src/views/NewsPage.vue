@@ -1,7 +1,5 @@
 <template>
   <div class="news-details">
-    <h2 class="page-title">News & Events</h2>
-
     <div v-if="!singleNews" class="news-cards">
       <router-link
         v-for="(item, index) in newsItems"

@@ -8,38 +8,28 @@
           <th>SL</th>
           <th>Title</th>
           <th>Description</th>
-          <th></th>
+          <th>Action</th>
         </tr>
       </thead>
 
       <tbody>
-        <tr
-           v-for="(notice, index) in filteredNotices":key="notice.id":class="{ highlight: notice.id === selectedId }">
-
-          <!-- SL -->
+        <tr v-for="(notice, index) in filteredNotices" :key="notice.id">
           <td>{{ index + 1 }}</td>
 
           <td class="title-cell">
-            {{ extractFileName(notice.pdf) }}
+            {{ extractFileName(notice.pdf) || notice.title }}
           </td>
 
           <td>
             <div v-if="notice.pdf" class="pdf-preview">
-              <a :href="notice.pdf" target="_blank">
-                <PdfPreview :src="notice.pdf" />
-              </a>
+              <PdfPreview :src="notice.pdf" />
             </div>
           </td>
 
           <td class="action-cell">
-            <a
-              :href="notice.pdf"
-              download
-              class="action-btn download-btn"
-              title="Download PDF"
-            >
-              Download
-            </a>
+            <router-link :to="`/notice/${notice.id}`" class="action-btn view-btn" title="View Notice">
+              👁
+            </router-link>
           </td>
         </tr>
 
@@ -59,10 +49,11 @@ import PdfPreview from '@/components/PdfPreview.vue'
 
 const route = useRoute()
 const noticeType = route.params.type || 'general'
-const selectedId = Number(route.query.id)
 
 const filteredNotices = computed(() =>
-  notices.filter(n => n.type === noticeType)
+  notices
+    .filter(n => n.type === noticeType)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
 )
 
 const extractFileName = (url) => {
@@ -112,7 +103,7 @@ const extractFileName = (url) => {
 }
 
 .pdf-preview {
-  max-height: 200px;
+  max-height: 150px;
   overflow: hidden;
 }
 
@@ -121,8 +112,8 @@ const extractFileName = (url) => {
 }
 
 .action-btn {
-  font-size: 14px;
-  padding: 6px 14px;
+  font-size: 18px;
+  padding: 6px 10px;
   border-radius: 5px;
   text-decoration: none;
   border: none;
@@ -130,12 +121,8 @@ const extractFileName = (url) => {
   color: #ffffff;
   transition: background 0.3s;
 }
-.highlight {
-  background-color: #e7f1ff !important;
-  border-left: 4px solid #0d6efd;
-}
 
-.download-btn:hover {
+.action-btn:hover {
   background-color: #0b5ed7;
 }
 
