@@ -17,7 +17,7 @@
           <td>{{ index + 1 }}</td>
 
           <td class="title-cell">
-            {{ extractFileName(notice.pdf) || notice.title }}
+            {{ notice.title }}
           </td>
 
           <td>
@@ -55,11 +55,6 @@ const filteredNotices = computed(() =>
     .filter(n => n.type === noticeType)
     .sort((a, b) => new Date(b.date) - new Date(a.date))
 )
-
-const extractFileName = (url) => {
-  if (!url) return ''
-  return decodeURIComponent(url.split('/').pop())
-}
 </script>
 
 <style scoped>

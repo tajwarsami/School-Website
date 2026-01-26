@@ -7,9 +7,9 @@
       </div>
 
       <div class="about-details">
-        <h2>About Cantonment English School & College</h2>
+        <h2>Cantonment English School & College</h2>
         <p>
-          Language is the medium through which we transmit knowledge, thoughts, and ideas. To connect with the world, proficiency in English is essential. With this vision, our institution (formerly Cantonment International School) started in 1998. In 2005, it became Cantonment English School (CES), and later upgraded to HSC level in 2010, now named Cantonment English School & College (CESC). Affiliated with the Chittagong Education Board, our students have excelled in board exams, nurtured in a congenial environment encouraging both curricular and co-curricular talents.
+          {{ fullText }}
         </p>
       </div>
 
@@ -18,8 +18,15 @@
 </template>
 
 <script>
+import { aboutSchool } from "@/data/aboutSchool";
+
 export default {
   name: "AboutDetails",
+  data() {
+    return {
+      fullText: aboutSchool.full,
+    };
+  },
 };
 </script>
 

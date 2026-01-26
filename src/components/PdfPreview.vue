@@ -1,6 +1,10 @@
 <template>
   <div class="pdf-wrapper">
-    <canvas ref="canvas"></canvas>
+    <canvas
+      v-for="pageIndex in numPages"
+      :ref="el => canvasRefs[pageIndex - 1] = el"
+      :key="pageIndex"
+    ></canvas>
   </div>
 </template>
 
@@ -18,24 +22,28 @@ const props = defineProps({
   }
 })
 
-const canvas = ref(null)
+const canvasRefs = []
+const numPages = ref(0)
 
 const renderPdf = async () => {
-  if (!props.src || !canvas.value) return
+  if (!props.src) return
 
   const pdf = await pdfjsLib.getDocument(props.src).promise
-  const page = await pdf.getPage(1)
+  numPages.value = pdf.numPages
 
-  const viewport = page.getViewport({ scale: 0.7 })
-  const context = canvas.value.getContext('2d')
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i)
+    const viewport = page.getViewport({ scale: 0.7 })
 
-  canvas.value.width = viewport.width
-  canvas.value.height = viewport.height
+    const canvas = canvasRefs[i - 1]
+    if (!canvas) continue
 
-  await page.render({
-    canvasContext: context,
-    viewport
-  }).promise
+    const context = canvas.getContext('2d')
+    canvas.width = viewport.width
+    canvas.height = viewport.height
+
+    await page.render({ canvasContext: context, viewport }).promise
+  }
 }
 
 onMounted(renderPdf)
@@ -49,7 +57,11 @@ watch(() => props.src, renderPdf)
   border-radius: 6px;
   border: 1px solid #cfd4da;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  max-height: 400px;
+  overflow-y: auto; /* scroll if PDF is long */
 }
 
 canvas {

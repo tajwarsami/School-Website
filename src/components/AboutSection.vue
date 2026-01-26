@@ -5,11 +5,11 @@
       <div class="about-text" v-show="visible" :class="{ 'slide-left': visible }">
         <h3 class="welcome-text">Welcome to</h3>
         <h2 class="institution-name">CANTONMENT ENGLISH SCHOOL & COLLEGE</h2>
+
         <p class="description">
-          Cantonment English School & College is committed to academic excellence, discipline,
-          and moral values. It focuses on holistic development and nurturing students to become
-          responsible citizens.
+          {{ shortText }}
         </p>
+
         <router-link to="/about-details" class="read-more-btn">
           Read More
         </router-link>
@@ -24,12 +24,20 @@
 </template>
 
 <script>
+import { aboutSchool } from "@/data/aboutSchool";
+
 export default {
   name: "AboutSection",
   data() {
     return {
       visible: false,
+      fullText: aboutSchool.full,
     };
+  },
+  computed: {
+    shortText() {
+      return this.fullText.substring(0, 300) + "...";
+    },
   },
   mounted() {
     setTimeout(() => {
@@ -166,5 +174,4 @@ export default {
         transform: translateY(0); 
     }
 }
-
 </style>

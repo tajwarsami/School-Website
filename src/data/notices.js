@@ -61,5 +61,12 @@ export const notices = [
     date: '2025-11-01',
     type: 'admission',
     pdf: '/pdfs/MarkSheet-100.pdf'
+  },
+  {
+    id: 10,
+    title: 'Admission result',
+    date: '2026-01-25',
+    type: 'admission',
+    pdf: '/pdfs/MarkSheet-99.pdf'
   }
 ]
