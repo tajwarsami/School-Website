@@ -2,12 +2,10 @@
   <footer class="footer">
     <div class="footer-top">
 
-      <!-- Left Section: Logo + Motto + Social Icons -->
       <div class="footer-left">
         <img :src="logo" alt="School Logo" class="logo" />
         <p class="motto">Education is Life</p>
 
-        <!-- Social Icons under Logo -->
         <div class="social-icons">
           <a href="https://www.facebook.com/" target="_blank" rel="noopener">
             <i class="fab fa-facebook-f"></i>
@@ -21,7 +19,6 @@
         </div>
       </div>
 
-      <!-- Center Section: Links -->
       <div class="footer-center">
         <div class="footer-section">
           <h4>External Links</h4>
@@ -42,7 +39,6 @@
         </div>
       </div>
 
-      <!-- Right Section: Contact Info -->
       <div class="footer-right">
         <p class="school-name"><strong>Cantonment English School & College</strong></p>
         <p>Bayezid Bostami Rd, Chattogram - 4210</p>
@@ -50,8 +46,6 @@
         <p>Email: <a href="mailto:cescctg05@gmail.com">cescctg05@gmail.com</a></p>
       </div>
     </div>
-
-    <!-- Bottom Section: Copyright -->
     <div class="footer-bottom">
       <p>&copy; 2026 Cantonment English School & College. All rights reserved.</p>
     </div>
@@ -96,7 +90,6 @@ const resultLinks = [
   align-items: flex-start;
 }
 
-/* Left Section: Logo + Motto + Social Icons */
 .footer-left {
   flex: 1 1 180px;
   text-align: center;
@@ -116,7 +109,6 @@ const resultLinks = [
   font-style: italic;
 }
 
-/* Social icons under logo */
 .footer-left .social-icons {
   margin-top: 10px;
 }
@@ -133,7 +125,6 @@ const resultLinks = [
   transform: scale(1.2);
 }
 
-/* Center Section: Links */
 .footer-center {
   display: flex;
   flex: 2 1 300px;
@@ -168,7 +159,6 @@ const resultLinks = [
   color: #ffdd57;
 }
 
-/* Right Section: Contact */
 .footer-right {
   flex: 1 1 180px;
   text-align: center;
@@ -184,7 +174,6 @@ const resultLinks = [
   color: #ffdd57;
 }
 
-/* Bottom Section */
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.3);
   padding-top: 15px;
@@ -196,7 +185,6 @@ const resultLinks = [
   color: #f0f0f0;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .footer-top {
     flex-direction: column;

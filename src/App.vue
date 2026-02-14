@@ -1,9 +1,7 @@
 <template>
   <PageLoader />
   <Header />
-
   <div class="page-wrapper">
-    <HeaderBanner />
     <router-view />
     <FooterSection />
   </div>
